@@ -3,14 +3,20 @@ import openai
 import datetime
 import requests
 
+# Set your OpenAI API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
+# Function to interact with GPT-3.5 (or GPT-4, if you have access)
 def get_gpt_response(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message.content.strip()
+    try:
+        response = openai.Completion.create(
+            model="gpt-3.5-turbo",  # or "gpt-4" if you're using GPT-4
+            prompt=prompt,
+            max_tokens=150  # Adjust tokens as needed
+        )
+        return response['choices'][0]['text'].strip()
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 def get_weather(city="London"):
     key = st.secrets["WEATHER_API_KEY"]
